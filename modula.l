@@ -77,7 +77,7 @@ int start_line;
 \'[^\']\' return process_token(yytext, "CHAR_CONST", yytext, CHAR_CONST);
 
     /* symbole końcowe */
-[+\-*/=<>|&,.;:()\[\]] return process_token(yytext, yytext, "", IDENT);
+[+\-*/=<>|&\\,.;:()\[\]] return process_token(yytext, yytext, "", IDENT);
 
     /* napisy w cudzysłowach (na warunkach początkowych) */
 <INITIAL>\" { BEGIN(ST_DQ_STRING); yymore(); }
