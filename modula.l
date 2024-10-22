@@ -4,8 +4,7 @@
 #include <stdlib.h>
 #define MAX_STR_LEN	100
 #include "modula.tab.h"
-int process_token(const char *text, const char *TokenType,
-    const char *TokenVal, const int TokenID); 
+int process_token(const char *text, const char *TokenType, const char *TokenVal, const int TokenID); 
 char *strnncpy(char *dst, const char *src, const int n);
 int start_line;
 %}
@@ -68,7 +67,7 @@ int start_line;
 [0-9]+ return process_token(yytext, "INTEGER_CONST", yytext, INTEGER_CONST);
 
     /* stałe zmiennoprzecinkowe */
-(([0-9]+\.[0-9]*)|([0-9]*\.[0-9]+))([eE][+-]?[0-9]+)? return process_token(yytext, "REAL_CONST", yytext, REAL_CONST);
+(([0-9]+\.[0-9]*)|([0-9]*\.[0-9]+))([eE][+-]?[0-9]+)? return process_token(yytext, "FLOAT_CONST", yytext, FLOAT_CONST);
 
     /* napisy w cudzysłowach */
 \"[^\"\n]*\" return process_token(yytext, "STRING_CONST", yytext, STRING_CONST);
@@ -97,7 +96,6 @@ int start_line;
 <ST_COMMENT>"*)" { BEGIN(INITIAL); }
 <ST_COMMENT><<EOF>> { printf("Komentarz otwarty w lini %d nie został zamknięty\n", start_line); BEGIN(INITIAL); }
 <INITIAL>"*)" { printf("Komentarz zamknięty w lini %d kiedy żaden nie został otwarty\n", yylineno); }
-
 
 %%
 
@@ -144,8 +142,7 @@ strnncpy(char *dst, const char *src, const int n)
  *              do którego nastąpiło dopasowanie, w drugiej - typ elementu,
  *              w trzeciej - wartość elementu (o ile występuje).
  */
-int process_token(const char *text, const char *TokenType,
-		  const char *TokenVal, const int TokenID)
+int process_token(const char *text, const char *TokenType, const char *TokenVal, const int TokenID)
 {
   int l;
   printf("%-20.20s%-15s %s\n", text, TokenType, TokenVal);
@@ -154,7 +151,7 @@ int process_token(const char *text, const char *TokenType,
   case INTEGER_CONST:
     yylval.i = atoi(text); break;
 
-  case REAL_CONST:
+  case FLOAT_CONST:
     yylval.d = atof(text); break;
 
   case IDENT:
