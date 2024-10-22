@@ -81,14 +81,14 @@ int start_line;
 
     /* napisy w cudzysłowach (na warunkach początkowych) */
 <INITIAL>\" { BEGIN(ST_DQ_STRING); yymore(); }
-<ST_DQ_STRING>\" { BEGIN(INITIAL); return process_token(yytext, "STRING_CONST", yytext, STRING_CONST); }
 <ST_DQ_STRING>. yymore();
+<ST_DQ_STRING>\" { BEGIN(INITIAL); return process_token(yytext, "STRING_CONST", yytext, STRING_CONST); }
 <ST_DQ_STRING>\n { printf("Brak końca napisu"); BEGIN(INITIAL); }
 
     /* stałe znakowe w apostrofach (na warunkach początkowych) */
 <INITIAL>\' { BEGIN(ST_AP_STRING); yymore(); }
-<ST_AP_STRING>\' { BEGIN(INITIAL); return process_token(yytext, "STRING_CONST", yytext, STRING_CONST); }
 <ST_AP_STRING>. yymore();
+<ST_AP_STRING>\' { BEGIN(INITIAL); return process_token(yytext, "STRING_CONST", yytext, STRING_CONST); }
 <ST_AP_STRING>\n { printf("Brak końca znaku"); BEGIN(INITIAL); }
 
     /* komentarze (na warunkach początkowych) */
