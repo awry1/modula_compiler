@@ -68,7 +68,7 @@ int start_line;
 [0-9]+ return process_token(yytext, "INTEGER_CONST", yytext, INTEGER_CONST);
 
     /* stałe zmiennoprzecinkowe */
-(([0-9]+\.[0-9]*)|([0-9]*\.[0-9]+))([eE][+-]?[0-9]+)? return process_token(yytext, "REAL_CONST", yytext, REAL_CONST);
+[0-9]+\.[0-9]+([eE][+-]?[0-9]+)? return process_token(yytext, "REAL_CONST", yytext, REAL_CONST);
 
     /* napisy w cudzysłowach */
 \"[^\"\n]*\" return process_token(yytext, "STRING_CONST", yytext, STRING_CONST);
@@ -77,6 +77,7 @@ int start_line;
 \'[^\']\' return process_token(yytext, "CHAR_CONST", yytext, CHAR_CONST);
 
     /* symbole końcowe */
+    /* do poprawy - nie IDENT */
 [+\-*/=<>|&\\,.;:()\[\]] return process_token(yytext, yytext, "", IDENT);
 
     /* napisy w cudzysłowach (na warunkach początkowych) */
