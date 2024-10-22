@@ -24,7 +24,7 @@
 /* literal values */
 %token <s> STRING_CONST CHAR_CONST
 %token <i> INTEGER_CONST
-%token <d> REAL_CONST
+%token <d> FLOAT_CONST
 /* operators */
 %token <I> ASSIGN LE GE NEQ RANGE
 /* other */
@@ -53,7 +53,7 @@ KEYWORD: KW_AND | KW_BEGIN | KW_CONST | KW_DIV | KW_DO | KW_ELSE | KW_ELSIF
 	| KW_ARRAY | KW_RECORD | KW_DOWNTO
 ;
 
-LITERAL_VALUE: STRING_CONST | INTEGER_CONST | REAL_CONST | CHAR_CONST
+LITERAL_VALUE: STRING_CONST | INTEGER_CONST | FLOAT_CONST | CHAR_CONST
 ;
 
 OPERATOR: ASSIGN | LE | GE | NEQ | RANGE
@@ -80,6 +80,5 @@ void yyerror( const char *txt)
 
 void found( const char *nonterminal, const char *value )
 {  /* informacja o znalezionych strukturach skladniowych (nonterminal) */
-        printf( "===== FOUND: %s %s%s%s=====\n", nonterminal, 
-                        (*value) ? "'" : "", value, (*value) ? "'" : "" );
+        printf( "===== FOUND: %s %s%s%s=====\n", nonterminal, (*value) ? "'" : "", value, (*value) ? "'" : "" );
 }
