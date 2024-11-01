@@ -67,7 +67,7 @@ int start_line;
 [0-9]+ return process_token(yytext, "INTEGER_CONST", yytext, INTEGER_CONST);
 
     /* stałe zmiennoprzecinkowe */
-[0-9]+\.[0-9]+([eE][+-]?[0-9]+)? return process_token(yytext, "REAL_CONST", yytext, REAL_CONST);
+[0-9]+\.[0-9]+([eE][+-]?[0-9]+)? return process_token(yytext, "FLOAT_CONST", yytext, FLOAT_CONST);
 
     /* napisy w cudzysłowach */
 \"[^\"\n]*\" return process_token(yytext, "STRING_CONST", yytext, STRING_CONST);
@@ -76,22 +76,25 @@ int start_line;
 \'[^\']\' return process_token(yytext, "CHAR_CONST", yytext, CHAR_CONST);
 
     /* symbole końcowe */
-    /* do poprawy - nie IDENT */
-[+\-*/=<>|&\\,.;:()\[\]] return process_token(yytext, yytext, "", IDENT);
+    /* [+\-/*=<>|&\\,.;:()\[\]] return process_token(yytext, yytext, "", IDENT); */
+[,;=:()+*\-.|\<\[\]] return process_token(yytext, yytext, "", yytext[0]);
 
     /* napisy w cudzysłowach (na warunkach początkowych) */
 <INITIAL>\" { BEGIN(ST_DQ_STRING); yymore(); }
 <ST_DQ_STRING>\" { BEGIN(INITIAL); return process_token(yytext, "STRING_CONST", yytext, STRING_CONST); }
 <ST_DQ_STRING>. yymore();
-<ST_DQ_STRING>\n { printf("Brak końca napisu"); BEGIN(INITIAL); }
+<ST_DQ_STRING>\n { printf("Brak kończącego cudzysłowa\n"); BEGIN(INITIAL); }
 
     /* stałe znakowe w apostrofach (na warunkach początkowych) */
 <INITIAL>\' { BEGIN(ST_AP_STRING); yymore(); }
-<ST_AP_STRING>\' { BEGIN(INITIAL); return process_token(yytext, "STRING_CONST", yytext, STRING_CONST); }
+<ST_AP_STRING>\' { 
+  if (yyleng == 3) {BEGIN(INITIAL); return process_token(yytext, "CHAR_CONST", yytext, CHAR_CONST); }
+  else { printf("Za dużo znaków pomiędzy apostrofami\n"); BEGIN(INITIAL); }
+}
 <ST_AP_STRING>. yymore();
-<ST_AP_STRING>\n { printf("Brak końca znaku"); BEGIN(INITIAL); }
+<ST_AP_STRING>\n { printf("Brak kończącego apostrofu\n"); BEGIN(INITIAL); }
 
-    /* komentarze (na warunkach początkowych) */
+  /* komentarze (na warunkach początkowych) */
 <INITIAL>"(*" { yymore(); BEGIN(ST_COMMENT); start_line = yylineno; }
 <ST_COMMENT>.|\n { yymore(); }
 <ST_COMMENT>"*)" { BEGIN(INITIAL); }
