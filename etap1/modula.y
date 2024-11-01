@@ -1,18 +1,16 @@
 %{
-#include	<stdio.h>
-#include	<string.h>
+#include <stdio.h>
+#include <string.h>
 #define MAX_STR_LEN	100
-
-  int yylex(void);
-  void yyerror(const char *txt);
-
-  void found( const char *nonterminal, const char *value );
+int yylex(void);
+void yyerror(const char *txt);
+void found(const char *nonterminal, const char *value);
 %}
 
 %union {
-  char s[ MAX_STR_LEN + 1 ];
-  int i;
-  double d;
+	char s[MAX_STR_LEN + 1];
+	int i;
+	double d;
 }
 
 %start GRAMMAR
@@ -37,8 +35,7 @@
 %%
 
 /* GRAMMAR */
-/* Oprocz podanych nizej, GRAMMAR moze byc takze modulem programu
-	(PROGRAM_MODULE) */
+/* Apart from what is given below, GRAMMAR can also be a program module (PROGRAM_MODULE) */
 GRAMMAR: TOKEN | GRAMMAR TOKEN
 	| error
 ;
@@ -59,26 +56,24 @@ LITERAL_VALUE: STRING_CONST | INTEGER_CONST | FLOAT_CONST | CHAR_CONST
 OPERATOR: ASSIGN | LE | GE | NEQ | RANGE
 ;
 
-OTHER: IDENT | ',' | ';' | '=' | ':' | '(' | ')' | '+' | '*' | '-' | '.' | '|'
-	| '<' | '[' | ']'
+OTHER: IDENT | ',' | ';' | '=' | ':' | '(' | ')' | '+' | '*' | '-' | '.' | '|' | '<' | '[' | ']'
 ;
 
 %%
 
-int main( void )
+int main(void)
 { 
-	printf( "Kamil Lubarski\n" );
-	printf( "yytext              Typ tokena         Wartosc tokena znakowo\n\n" );
+	printf("Kamil Lubarski\n" );
+	printf("yytext              Token type      Token value as string\n\n");
 	yyparse();
-	return( 0 ); // OK
+	return(0);
 }
 
-void yyerror( const char *txt)
-{
-	printf( "%s\n", txt );
+void yyerror(const char *txt) {
+	printf("%s\n", txt);
 }
 
-void found( const char *nonterminal, const char *value )
-{  /* informacja o znalezionych strukturach skladniowych (nonterminal) */
-        printf( "===== FOUND: %s %s%s%s=====\n", nonterminal, (*value) ? "'" : "", value, (*value) ? "'" : "" );
+void found(const char *nonterminal, const char *value) {  
+	/* informacja o znalezionych strukturach skladniowych (nonterminal) */
+	printf("===== FOUND: %s %s%s%s=====\n", nonterminal, (*value) ? "'" : "", value, (*value) ? "'" : "");
 }
