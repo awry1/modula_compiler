@@ -1,8 +1,8 @@
 (********************************************************)
-(* Program pokazuje kody ASCII                          *)
-(* Kompilacja:                                          *)
+(* Program displays ASCII codes                         *)
+(* Compilation:                                         *)
 (*   m2c -all test.mod -o test                          *)
-(* Uruchomienie:                                        *)
+(* Running:                                             *)
 (*   ./test                                             *)
 (********************************************************)
 MODULE test;
@@ -16,11 +16,11 @@ VAR
   fl : REAL;
   t : ARRAY[1 .. 10] OF CARDINAL;
   d : RECORD
-       rok, miesiac : CARDINAL;
-       dzien : CARDINAL;
+       year, month : CARDINAL;
+       day : CARDINAL;
   END;
 BEGIN
-  WriteString("Kody"); WriteString(" ASCII");
+  WriteString("ASCII "); WriteString("codes: ");
   WriteLn;
   FOR i := FromAscii TO ToAscii DO
     WriteCard(i, 3);
@@ -28,11 +28,11 @@ BEGIN
     Write(CHR(i));
     WriteLn
   END;
-  fl := 1.1 + 1.0E-2 + 1.0E+2 + 1.0E1; (* liczby rzeczywiste *)
+  fl := 1.1 + 1.0E-2 + 1.0E+2 + 1.0E1; (* real numbers *)
   IF (fl <= 11.11) AND (fl >= 1.111E1) THEN
-    WriteString("Zgodnie z oczekiwaniami")
+    WriteString("As expected")
   ELSE
-    WriteString("Olaboga!")
+    WriteString("No way!")
   END;
   WriteLn;
   i := 1;
@@ -47,12 +47,12 @@ BEGIN
   END;
   CASE CHR(FromAscii+16) OF
        '0': WriteLn("Aha!")
-     | 'A','a': Writeln("Tak?")
+     | 'A','a': Writeln("Yes?")
   ELSE
        Writeln("O!")
   END;
   t[10] = 10;
   FOR i := 9 DOWNTO 1 DO t[i] := t[i+1] * i * i END;
-  d.rok := 2018; d.dzien := 1;
-  d.miesiac := d.dzien * 10
+  d.year := 2018; d.day:= 1;
+  d.month := d.day * 10
 END test.
