@@ -19,11 +19,14 @@ int start_line;
 %%
 
 	/* keywords */
+(?i:ARRAY) return process_token(yytext, "KW_ARRAY", "", KW_ARRAY);
 (?i:AND) return process_token(yytext, "KW_AND", "", KW_AND);
 (?i:BEGIN) return process_token(yytext, "KW_BEGIN", "", KW_BEGIN);
+(?i:CASE) return process_token(yytext, "KW_CASE", "", KW_CASE);
 (?i:CONST) return process_token(yytext, "KW_CONST", "", KW_CONST);
 (?i:DIV) return process_token(yytext, "KW_DIV", "", KW_DIV);
 (?i:DO) return process_token(yytext, "KW_DO", "", KW_DO);
+(?i:DOWNTO) return process_token(yytext, "KW_DOWNTO", "", KW_DOWNTO);
 (?i:ELSE) return process_token(yytext, "KW_ELSE", "", KW_ELSE);
 (?i:ELSIF) return process_token(yytext, "KW_ELSIF", "", KW_ELSIF);
 (?i:END) return process_token(yytext, "KW_END", "", KW_END);
@@ -32,24 +35,21 @@ int start_line;
 (?i:IF) return process_token(yytext, "KW_IF", "", KW_IF);
 (?i:IMPORT) return process_token(yytext, "KW_IMPORT", "", KW_IMPORT);
 (?i:IN) return process_token(yytext, "KW_IN", "", KW_IN);
+(?i:LOOP) return process_token(yytext, "KW_LOOP", "", KW_LOOP);
 (?i:MOD) return process_token(yytext, "KW_MOD", "", KW_MOD);
 (?i:MODULE) return process_token(yytext, "KW_MODULE", "", KW_MODULE);
 (?i:NOT) return process_token(yytext, "KW_NOT", "", KW_NOT);
-(?i:PROCEDURE) return process_token(yytext, "KW_PROCEDURE", "", KW_PROCEDURE);
+(?i:OF) return process_token(yytext, "KW_OF", "", KW_OF);
 (?i:OR) return process_token(yytext, "KW_OR", "", KW_OR);
+(?i:PROCEDURE) return process_token(yytext, "KW_PROCEDURE", "", KW_PROCEDURE);
+(?i:RECORD) return process_token(yytext, "KW_RECORD", "", KW_RECORD);
+(?i:REPEAT) return process_token(yytext, "KW_REPEAT", "", KW_REPEAT);
 (?i:THEN) return process_token(yytext, "KW_THEN", "", KW_THEN);
-(?i:TYPE) return process_token(yytext, "KW_TYPE", "", KW_TYPE);
 (?i:TO) return process_token(yytext, "KW_TO", "", KW_TO);
+(?i:TYPE) return process_token(yytext, "KW_TYPE", "", KW_TYPE);
+(?i:UNTIL) return process_token(yytext, "KW_UNTIL", "", KW_UNTIL);
 (?i:VAR) return process_token(yytext, "KW_VAR", "", KW_VAR);
 (?i:WHILE) return process_token(yytext, "KW_WHILE", "", KW_WHILE);
-(?i:REPEAT) return process_token(yytext, "KW_REPEAT", "", KW_REPEAT);
-(?i:UNTIL) return process_token(yytext, "KW_UNTIL", "", KW_UNTIL);
-(?i:LOOP) return process_token(yytext, "KW_LOOP", "", KW_LOOP);
-(?i:CASE) return process_token(yytext, "KW_CASE", "", KW_CASE);
-(?i:OF) return process_token(yytext, "KW_OF", "", KW_OF);
-(?i:ARRAY) return process_token(yytext, "KW_ARRAY", "", KW_ARRAY);
-(?i:RECORD) return process_token(yytext, "KW_RECORD", "", KW_RECORD);
-(?i:DOWNTO) return process_token(yytext, "KW_DOWNTO", "", KW_DOWNTO);
 
 	/* removal of white space */
 [ \t\n]+ ;
@@ -77,7 +77,7 @@ int start_line;
 \'[^\']\' return process_token(yytext, "CHAR_CONST", yytext, CHAR_CONST);
 
 	/* one-character operators */
-[,;=:()+*\-.|\<\[\]] return process_token(yytext, yytext, "", yytext[0]);
+[,;=:()+*\-.|\<\[\]] return process_token(yytext, yytext, "", *yytext);
 
 	/* strings in double quotes (using start conditions) */
 <INITIAL>\" { BEGIN(ST_DQ_STRING); yymore(); }
@@ -89,7 +89,7 @@ int start_line;
 <INITIAL>\' { BEGIN(ST_SQ_STRING); yymore(); }
 <ST_SQ_STRING>\' { 
 	if (yyleng == 3) {BEGIN(INITIAL); return process_token(yytext, "CHAR_CONST", yytext, CHAR_CONST); }
-	else { printf("Too much characters between single quotes\n"); BEGIN(INITIAL); }
+	else { printf("Wrong number of characters between single quotes\n"); BEGIN(INITIAL); }
 }
 <ST_SQ_STRING>. yymore();
 <ST_SQ_STRING>\n { printf("Missed closing single quote\n"); BEGIN(INITIAL); }
@@ -114,8 +114,7 @@ int yywrap() { return 1; }
  * Returns:	dst.
  * Remarks:	strncpy does not append character code 0 after copied string. Target string must have room for n+1 characters.
  */
-char *
-strnncpy(char *dst, const char *src, const int n) {
+char *strnncpy(char *dst, const char *src, const int n) {
 	if (n > 0) {
 		strncpy(dst, src, n);
 	}
