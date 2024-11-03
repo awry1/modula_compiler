@@ -77,7 +77,7 @@ int start_line;
 \'[^\']\' return process_token(yytext, "CHAR_CONST", yytext, CHAR_CONST);
 
 	/* one-character operators */
-[,;=:()+*\-.|\<\[\]] return process_token(yytext, yytext, "", *yytext);
+[.,:;+\-*/=<>#()|\[\]] return process_token(yytext, yytext, "", *yytext);
 
 	/* strings in double quotes (using start conditions) */
 <INITIAL>\" { BEGIN(ST_DQ_STRING); yymore(); }
